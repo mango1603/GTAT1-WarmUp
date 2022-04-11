@@ -149,7 +149,7 @@ Transform:
   m_GameObject: {fileID: 71018111}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.25, y: 0.25, z: 0}
   m_Children: []
   m_Father: {fileID: 1376731757}
   m_RootOrder: 0
@@ -195,7 +195,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -4158381282897734576, guid: fcd1812c475621b47b85bf35aa3bc31b, type: 3}
+  m_Sprite: {fileID: 3893759006183507605, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -572,10 +572,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 0d096de1ba745744d9f574cdefc20774, type: 3}
-    m_FontSize: 40
+    m_FontSize: 30
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 4
+    m_MinSize: 3
     m_MaxSize: 126
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -586,7 +586,9 @@ MonoBehaviour:
   m_Text: 'Endless Runner
 
 
-    Press Spacebar to jump'
+    Press Spacebar
+
+    To Jump and Transform'
 --- !u!222 &490508154
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -943,6 +945,26 @@ MonoBehaviour:
   jumpKeys: 20000000
   character: {fileID: 71018112}
   characterSprite: {fileID: 71018113}
+  moveSpriteArrayBeige:
+  - {fileID: 7596908494401232921, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  - {fileID: -1804328586961679316, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  jumpSpriteBeige: {fileID: 3977104306770285739, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  moveSpriteArrayBlue:
+  - {fileID: -4637215932435482840, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  - {fileID: -2905856628991283079, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  jumpSpriteBlue: {fileID: -4457904563368169441, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  moveSpriteArrayGreen:
+  - {fileID: 5392407324012612226, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  - {fileID: 2511571442647721048, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  jumpSpriteGreen: {fileID: 5853036170646340280, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  moveSpriteArrayPink:
+  - {fileID: 4143797282725683866, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  - {fileID: -4675726891315147460, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  jumpSpritePink: {fileID: -9072022433835364090, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  moveSpriteArrayYellow:
+  - {fileID: -7873879592109384512, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  - {fileID: 7400410943304158326, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
+  jumpSpriteYellow: {fileID: 4926290837033430803, guid: d3ccc91b1c73b9b49beb4f24ecb5a1fe, type: 3}
   jumpPosition:
     serializedVersion: 2
     m_Curve:
