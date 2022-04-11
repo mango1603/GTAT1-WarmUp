@@ -45,6 +45,10 @@ namespace Scripts
         [SerializeField] private Sprite jumpSpriteYellow;
 
         [SerializeField] private AnimationCurve jumpPosition;
+        
+        [SerializeField] private AudioClip jumpAudio;
+        [SerializeField] private AudioClip fallAudio;
+
 
         private bool canJump = true;
         private bool isJumping = false;
@@ -71,6 +75,8 @@ namespace Scripts
             {
                 characterSprite.sprite = GetJumpSprite();
                 SwitchColor();
+                SoundManager.Instance.PlaySoundOnce(jumpAudio);
+
                 // first we disable the jump, then start the Coroutine that handles the jump and invoke the event
                 canJump = false;
                 StartCoroutine(JumpRoutine());
@@ -116,6 +122,7 @@ namespace Scripts
                 {
                     canJump = true;
                     isJumping = false;
+                    SoundManager.Instance.PlaySoundOnce(fallAudio);
                 }
 
                 // yield return null waits a single frame
