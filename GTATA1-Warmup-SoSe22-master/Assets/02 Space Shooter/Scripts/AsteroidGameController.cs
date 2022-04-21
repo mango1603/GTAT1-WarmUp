@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,16 +15,29 @@ namespace Scripts
         public Asteroid[] mediumAsteroids;
         public Asteroid[] smallAsteroids;
 
+        public PowerUp[] powerUps;
+
         [SerializeField] private Vector3 maximumSpeed, maximumSpin;
         [SerializeField] private PlayerShip playerShip;
         [SerializeField] private Transform spawnAnchor;
+        [SerializeField] private int maxShipHealth = 100;
+        [SerializeField] private int currentShipHealth;
 
         private List<Asteroid> activeAsteroids;
+        private List<PowerUp> activePowerUps;
         private Random random;
 
+        private const int PowerUpThreshold = 17;
+        private const int LargeAsteroidDamage = 20;
+        private const int MediumAsteroidDamage = 15;
+        private const int SmallAsteroidDamage = 10;
+
+        public int gunLevel = 1;
         private void Start()
         {
             activeAsteroids = new List<Asteroid>();
+            activePowerUps = new List<PowerUp>();
+            currentShipHealth = maxShipHealth;
             random = new Random();
             // spawn some initial asteroids
             for (var i = 0; i < 5; i++)
@@ -52,9 +66,9 @@ namespace Scripts
 
             // try to position the asteroid somewhere where it doesn't hit the player or another active asteroid
             for (var i = 0;
-                playerShip.shipSprite.bounds.Intersects(asteroidSprite.bounds) ||
-                activeAsteroids.Any(x => x.GetComponent<SpriteRenderer>().bounds.Intersects(asteroidSprite.bounds));
-                i++)
+                 playerShip.shipSprite.bounds.Intersects(asteroidSprite.bounds) ||
+                 activeAsteroids.Any(x => x.GetComponent<SpriteRenderer>().bounds.Intersects(asteroidSprite.bounds));
+                 i++)
             {
                 // give up after 15 tries.
                 if (i > 15)
@@ -65,7 +79,7 @@ namespace Scripts
 
                 newObject.transform.position = RandomPointInBounds(inLocation);
             }
-            
+
             // take parent velocity into consideration
             if (parent != null)
             {
@@ -83,6 +97,22 @@ namespace Scripts
             activeAsteroids.Add(newObject);
         }
 
+        /// <summary>
+        /// Spawn a random power up in the given power up prefabs in the given location
+        /// </summary>
+        private void SpawnPowerUp(PowerUp[] prefabs, Bounds inLocation)
+        {
+            // get a random prefab from the list
+            var prefab = prefabs[random.Next(prefabs.Length)];
+
+            // create an instance of the prefab
+            var newObject = Instantiate(prefab, spawnAnchor);
+            var transform1 = newObject.transform;
+            transform1.position = inLocation.center;
+            transform1.localScale = new Vector2(3 , 3);
+
+            activePowerUps.Add(newObject);
+        }
 
         /// <summary>
         /// Checks if a laser is intersecting with an asteroid and executes gameplay behaviour on that
@@ -98,10 +128,17 @@ namespace Scripts
             {
                 return;
             }
-            
+
             // otherwise remove the asteroid from the tracked asteroid
             activeAsteroids.Remove(asteroid);
             var bounds = asteroid.spriteRenderer.bounds;
+
+            // create a random power up
+            if (RandomSpawn(PowerUpThreshold))
+            {
+                SpawnPowerUp(powerUps, bounds);
+            }
+
             // get the correct set of prefabs to spawn asteroids in place of the asteroid that now explodes
             var prefabs = asteroid.asteroidSize switch
             {
@@ -123,14 +160,102 @@ namespace Scripts
             {
                 SpawnAsteroid(prefabs, bounds);
             }
-        
+
             // oh, also get rid of the laser now
             Destroy(laser.gameObject);
         }
 
+        private bool RandomSpawn(int threshold)
+        {
+            if (threshold > 100) return false;
+
+            var num = random.Next(100);
+            return num <= threshold;
+        }
+
         public void ShipIntersection(SpriteRenderer ship)
         {
-            // :thinking: this could be solved very similarly to a laser intersection
+            ShipAsteroidsInteraction(ship);
+            ShipPowerUpsInteraction(ship);
+        }
+
+        private void ShipAsteroidsInteraction(SpriteRenderer ship)
+        {
+            // go through all asteroids, check if they intersect with the ship and stop after the first
+            var asteroid = activeAsteroids
+                .FirstOrDefault(x => x.GetComponent<SpriteRenderer>().bounds.Intersects(ship.bounds));
+
+            // premature exit: this ship hasn't hit anything
+            if (asteroid == null)
+            {
+                return;
+            }
+
+            // otherwise remove the asteroid from the tracked asteroid
+            activeAsteroids.Remove(asteroid);
+
+            // remove the asteroid gameobject with all its components
+            Destroy(asteroid.gameObject);
+
+            //Decrease ship health depends on the hit asteroid
+            DamageShip(asteroid);
+
+            // get rid of the ship when the health goes below 0
+            if (currentShipHealth <= 0)
+            {
+                Destroy(ship.gameObject);
+            }
+        }
+        
+        private void ShipPowerUpsInteraction(SpriteRenderer ship)
+        {
+            // go through all powers, check if they intersect with the ship and stop after the first
+            var powerUp = activePowerUps
+                .FirstOrDefault(x => x.GetComponent<SpriteRenderer>().bounds.Intersects(ship.bounds));
+
+            // premature exit: this power up hasn't hit anything
+            if (powerUp == null)
+            {
+                return;
+            }
+
+            switch (powerUp.powerUpType)
+            {
+                //otherwise power up the ship based on the acquired power
+                //increase gun power
+                case PowerUpType.Gun:
+                    gunLevel++;
+                    break;
+                //increase ship health
+                case PowerUpType.Shield:
+                    currentShipHealth += 25;
+                    break;
+                //increase ship speed or decrease asteroid speed
+                case PowerUpType.Speed:
+                    
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            //remove the powerUp from the tracked powerUps
+            activePowerUps.Remove(powerUp);
+
+            // remove the powerUp gameobject with all its components
+            Destroy(powerUp.gameObject);
+        }
+
+        private void DamageShip(Asteroid asteroid)
+        {
+            //Health lost depends on the size of the hit asteroid
+            var healthLoss = asteroid.asteroidSize switch
+            {
+                AsteroidSize.Large => LargeAsteroidDamage,
+                AsteroidSize.Medium => MediumAsteroidDamage,
+                _ => SmallAsteroidDamage
+            };
+
+            currentShipHealth -= healthLoss;
         }
 
         private static float RandomPointOnLine(float min, float max)
