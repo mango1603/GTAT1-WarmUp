@@ -7,7 +7,7 @@ namespace Scripts
     /// </summary>
     public class Gun : MonoBehaviour
     {
-        [SerializeField] private Laser laserPrefab;
+        [SerializeField] private Laser[] laserPrefabs;
         private static AsteroidGameController _runGameController;
         private PlayerShip ship;
         private Quaternion frontRotate;
@@ -25,19 +25,25 @@ namespace Scripts
         private void Update()
         {
             UpdateRotation();
+            var gunLevel = _runGameController.gunLevel;
+            var gunNum = _runGameController.gunNum;
+            if (gunLevel >= laserPrefabs.Length)
+            {
+                gunLevel = laserPrefabs.Length - 1;
+            }
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                Fire(frontRotate);
-                if (_runGameController.gunLevel > 1)
+                Fire(frontRotate, gunLevel);
+                if (gunNum > 0)
                 {
-                    Fire(backRotate);
+                    Fire(backRotate, gunLevel);
                 }
 
-                if (_runGameController.gunLevel > 2)
+                if (gunNum > 1)
                 {
-                    Fire(side1Rotate);
-                    Fire(side2Rotate);
+                    Fire(side1Rotate, gunLevel);
+                    Fire(side2Rotate, gunLevel);
                 }
             }
         }
@@ -50,10 +56,10 @@ namespace Scripts
             backRotate = transform.rotation * Quaternion.Euler(0, 0, 180);
         }
 
-        private void Fire(Quaternion rotation)
+        private void Fire(Quaternion rotation, int level)
         {
-            laserPrefab.initialVelocity = ship.movementObject.CurrentVelocity;
-            Instantiate(laserPrefab, transform.position, rotation);
+            laserPrefabs[level].initialVelocity = ship.movementObject.CurrentVelocity;
+            Instantiate(laserPrefabs[level], transform.position, rotation);
         }
     }
 }

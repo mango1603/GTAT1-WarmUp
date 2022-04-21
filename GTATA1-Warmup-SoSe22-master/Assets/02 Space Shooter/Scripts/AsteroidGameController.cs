@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = System.Random;
 
 namespace Scripts
@@ -17,32 +19,60 @@ namespace Scripts
 
         public PowerUp[] powerUps;
 
+        public Text endGameText;
+        public Button endGameButton;
+
         [SerializeField] private Vector3 maximumSpeed, maximumSpin;
         [SerializeField] private PlayerShip playerShip;
         [SerializeField] private Transform spawnAnchor;
-        [SerializeField] private int maxShipHealth = 100;
-        [SerializeField] private int currentShipHealth;
-
+        
         private List<Asteroid> activeAsteroids;
         private List<PowerUp> activePowerUps;
+        private PlayerHealth playerHealth;
         private Random random;
 
+        //Change to spawn power up after an asteroid is destroyed
         private const int PowerUpThreshold = 17;
+        //Amount of health point damaged to the ship if it hit
         private const int LargeAsteroidDamage = 20;
         private const int MediumAsteroidDamage = 15;
         private const int SmallAsteroidDamage = 10;
 
-        public int gunLevel = 1;
-        private void Start()
+        //Gun level - upgrade by gather the powerUp
+        public int gunNum;
+        public int gunLevel;
+
+        private void Awake()
         {
+            playerHealth = playerShip.GetComponent<PlayerHealth>();
             activeAsteroids = new List<Asteroid>();
             activePowerUps = new List<PowerUp>();
-            currentShipHealth = maxShipHealth;
+        }
+
+        private void Start()
+        {
             random = new Random();
             // spawn some initial asteroids
             for (var i = 0; i < 5; i++)
             {
                 SpawnAsteroid(bigAsteroids, Camera.main.OrthographicBounds());
+            }
+        }
+
+        private void Update()
+        {
+            if (!activeAsteroids.Any())
+            {
+                endGameText.text = "You Win";
+                endGameText.gameObject.SetActive(true);
+                endGameButton.gameObject.SetActive(true);
+            }
+
+            if (playerHealth.currentHealth <= 0)
+            {
+                endGameText.text = "You Lose";
+                endGameText.gameObject.SetActive(true);
+                endGameButton.gameObject.SetActive(true);
             }
         }
 
@@ -201,7 +231,7 @@ namespace Scripts
             DamageShip(asteroid);
 
             // get rid of the ship when the health goes below 0
-            if (currentShipHealth <= 0)
+            if (playerHealth.currentHealth <= 0)
             {
                 Destroy(ship.gameObject);
             }
@@ -222,17 +252,17 @@ namespace Scripts
             switch (powerUp.powerUpType)
             {
                 //otherwise power up the ship based on the acquired power
-                //increase gun power
-                case PowerUpType.Gun:
-                    gunLevel++;
+                //increase number of gun
+                case PowerUpType.ExtraWeapon:
+                    gunNum++;
                     break;
                 //increase ship health
-                case PowerUpType.Shield:
-                    currentShipHealth += 25;
+                case PowerUpType.IncreaseHealth:
+                    playerHealth.Heal(25);
                     break;
-                //increase ship speed or decrease asteroid speed
-                case PowerUpType.Speed:
-                    
+                //increase gun power
+                case PowerUpType.UpdateWeapon:
+                    gunLevel++;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -255,7 +285,7 @@ namespace Scripts
                 _ => SmallAsteroidDamage
             };
 
-            currentShipHealth -= healthLoss;
+            playerHealth.Damage(healthLoss);
         }
 
         private static float RandomPointOnLine(float min, float max)
@@ -283,6 +313,11 @@ namespace Scripts
 
             maximum.Scale(new Vector3(RandomValue(), RandomValue(), RandomValue()));
             return maximum;
+        }
+
+        public void ResetGame()
+        {
+            SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex ) ;
         }
     }
 }

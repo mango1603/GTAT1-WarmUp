@@ -40,6 +40,7 @@ namespace Scripts
 
             // remove all destroyed balls
             balls = balls.Where(x => x != null).ToList();
+            
             // if there are no balls left, the game is lost
             if (balls.Count == 0)
             {

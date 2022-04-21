@@ -13,8 +13,8 @@ namespace Scripts
 
     public enum PowerUpType
     {
-        Gun,
-        Shield,
-        Speed
+        ExtraWeapon,
+        IncreaseHealth,
+        UpdateWeapon
     }
 }

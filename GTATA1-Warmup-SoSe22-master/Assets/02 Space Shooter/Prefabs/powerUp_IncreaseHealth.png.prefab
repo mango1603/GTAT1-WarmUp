@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 266269613347962554}
   - component: {fileID: 8590455769959482045}
   m_Layer: 0
-  m_Name: powerUp_Speed.png
+  m_Name: powerUp_IncreaseHealth
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73,7 +73,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1838175905825336305, guid: 593cfbb6d75dc2a4588d2bd0196f938b, type: 3}
+  m_Sprite: {fileID: -8971159898044158050, guid: 593cfbb6d75dc2a4588d2bd0196f938b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -97,4 +97,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 266269613347962554}
-  powerUpType: 2
+  powerUpType: 1
