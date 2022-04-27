@@ -10,6 +10,8 @@ namespace Scripts
         [SerializeField] private Laser[] laserPrefabs;
         private static AsteroidGameController _runGameController;
         private PlayerShip ship;
+        
+        //Possible rotations to spawn bullet
         private Quaternion frontRotate;
         private Quaternion side1Rotate;
         private Quaternion side2Rotate;
@@ -25,8 +27,11 @@ namespace Scripts
         private void Update()
         {
             UpdateRotation();
+            //Current gun attributes is based on the power level on the controller
             var gunLevel = _runGameController.gunLevel;
             var gunNum = _runGameController.gunNum;
+            
+            //Limiting the level
             if (gunLevel >= laserPrefabs.Length)
             {
                 gunLevel = laserPrefabs.Length - 1;
@@ -34,12 +39,16 @@ namespace Scripts
 
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                //Fire only in front
                 Fire(frontRotate, gunLevel);
+                
+                //Fire also in the back
                 if (gunNum > 0)
                 {
                     Fire(backRotate, gunLevel);
                 }
 
+                //Fire in the both side
                 if (gunNum > 1)
                 {
                     Fire(side1Rotate, gunLevel);
@@ -48,6 +57,9 @@ namespace Scripts
             }
         }
 
+        /// <summary>
+        /// Update the rotation for the bullet spawn position
+        /// </summary>
         private void UpdateRotation()
         {
             frontRotate = transform.rotation;
@@ -56,6 +68,9 @@ namespace Scripts
             backRotate = transform.rotation * Quaternion.Euler(0, 0, 180);
         }
 
+        /// <summary>
+        /// Fire/Spawn the bullet based on the given rotation and current gun level
+        /// </summary>
         private void Fire(Quaternion rotation, int level)
         {
             laserPrefabs[level].initialVelocity = ship.movementObject.CurrentVelocity;

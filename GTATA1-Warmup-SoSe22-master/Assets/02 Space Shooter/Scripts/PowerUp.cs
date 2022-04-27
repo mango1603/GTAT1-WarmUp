@@ -3,7 +3,7 @@
 namespace Scripts
 {
     /// <summary>
-    /// Container component to hold important references
+    /// Container component to hold power up references
     /// </summary>
     public class PowerUp : MonoBehaviour
     {
@@ -13,8 +13,11 @@ namespace Scripts
 
     public enum PowerUpType
     {
+        //Spawn extra weapon
         ExtraWeapon,
+        //Increase the current health point
         IncreaseHealth,
+        //Update the weapon level
         UpdateWeapon
     }
 }

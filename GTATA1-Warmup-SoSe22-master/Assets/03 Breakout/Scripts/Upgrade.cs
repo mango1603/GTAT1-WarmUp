@@ -25,15 +25,27 @@ namespace Scripts
         {
             var number = Random.value;
 
-            if (number < 0.33f)
+            if (number < 0.2f)
             {
                 upgradeType = UpgradeType.BiggerPedal;
                 return;
             }
 
-            if (number < 0.66f)
+            if (number < 0.4f)
             {
                 upgradeType = UpgradeType.SmallerPedal;
+                return;
+            }
+            
+            if (number < 0.6f)
+            {
+                upgradeType = UpgradeType.BiggerBall;
+                return;
+            }
+            
+            if (number < 0.8f)
+            {
+                upgradeType = UpgradeType.SmallerBall;
                 return;
             }
 

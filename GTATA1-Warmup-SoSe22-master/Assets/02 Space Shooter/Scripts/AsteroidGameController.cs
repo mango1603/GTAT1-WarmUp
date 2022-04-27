@@ -32,18 +32,19 @@ namespace Scripts
         private Random random;
 
         //Change to spawn power up after an asteroid is destroyed
-        private const int PowerUpThreshold = 17;
+        private const int PowerUpThreshold = 25;
         //Amount of health point damaged to the ship if it hit
         private const int LargeAsteroidDamage = 20;
         private const int MediumAsteroidDamage = 15;
         private const int SmallAsteroidDamage = 10;
 
-        //Gun level - upgrade by gather the powerUp
+        //Gun attributes - upgrade by gathering the powerUp
         public int gunNum;
         public int gunLevel;
 
         private void Awake()
         {
+            //Initializing variables
             playerHealth = playerShip.GetComponent<PlayerHealth>();
             activeAsteroids = new List<Asteroid>();
             activePowerUps = new List<PowerUp>();
@@ -61,6 +62,7 @@ namespace Scripts
 
         private void Update()
         {
+            //Setting game win/lose condition
             if (!activeAsteroids.Any())
             {
                 endGameText.text = "You Win";
@@ -195,6 +197,9 @@ namespace Scripts
             Destroy(laser.gameObject);
         }
 
+        /// <summary>
+        /// Random generator based on the given percentage (< 100%)
+        /// </summary>
         private bool RandomSpawn(int threshold)
         {
             if (threshold > 100) return false;
@@ -203,12 +208,18 @@ namespace Scripts
             return num <= threshold;
         }
 
+        /// <summary>
+        /// Interactions between ship and asteroids/ powerUps
+        /// </summary>
         public void ShipIntersection(SpriteRenderer ship)
         {
             ShipAsteroidsInteraction(ship);
             ShipPowerUpsInteraction(ship);
         }
 
+        /// <summary>
+        /// Interactions between ship and asteroids
+        /// </summary>
         private void ShipAsteroidsInteraction(SpriteRenderer ship)
         {
             // go through all asteroids, check if they intersect with the ship and stop after the first
@@ -237,6 +248,9 @@ namespace Scripts
             }
         }
         
+        /// <summary>
+        /// Interactions between ship and powerUps
+        /// </summary>
         private void ShipPowerUpsInteraction(SpriteRenderer ship)
         {
             // go through all powers, check if they intersect with the ship and stop after the first
@@ -275,6 +289,9 @@ namespace Scripts
             Destroy(powerUp.gameObject);
         }
 
+        /// <summary>
+        /// Damage the ship/ minus the current hp based on the configured constants
+        /// </summary>
         private void DamageShip(Asteroid asteroid)
         {
             //Health lost depends on the size of the hit asteroid
@@ -315,6 +332,9 @@ namespace Scripts
             return maximum;
         }
 
+        /// <summary>
+        /// Reset the game scene when called
+        /// </summary>
         public void ResetGame()
         {
             SceneManager.LoadScene( SceneManager.GetActiveScene().buildIndex ) ;

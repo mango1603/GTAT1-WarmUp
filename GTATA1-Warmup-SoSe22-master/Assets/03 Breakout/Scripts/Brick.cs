@@ -14,7 +14,7 @@ namespace Scripts
         {
             if (brickType == BrickType.Upgrade)
             {
-                var upgrade = Instantiate(upgradePrefab, transform.parent);
+                var upgrade = Instantiate(upgradePrefab, transform.parent.parent);
                 upgrade.transform.position = transform.position;
             }
         }

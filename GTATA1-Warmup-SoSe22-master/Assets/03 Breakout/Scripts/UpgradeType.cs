@@ -4,6 +4,8 @@
     {
         SmallerPedal,
         BiggerPedal,
-        ExtraBall
+        ExtraBall,
+        BiggerBall,
+        SmallerBall
     }
 }
